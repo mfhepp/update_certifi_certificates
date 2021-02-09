@@ -31,6 +31,18 @@ If the script fails after renaming the current certificate file, you have to rev
 
 The correct path to be used for the `cd`command is shown in the output of the script.
 
+## Missing Intermediate Certificates in Python SSL / Requests / Reppy 
+
+This script does not solve the issue of missing **intermediate certificates** in Python.
+
+It is a common flaw in SSL server configurations to provide an incomplete chain of certificates, often omitting intermediate certificates. Because this configuration flaw is common, most but not all modern browsers implement a technique called "AIA Fetching" to fix this on the fly (see e.g. https://www.thesslstore.com/blog/aia-fetching/).
+
+Python's SSL support does not support AIA Fetching and depends on a complete chain of certificates from the server; otherwise it throws an exception, like so
+
+    SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1124)')))
+
+I wrote a longer [piece for StackOverflow on how to add such missing intermediate certificates to `certifi`.](https://stackoverflow.com/a/66111417/516699)
+
 ## License and Disclaimer
 Written in 2021 by Martin Hepp, martin.hepp@unibw.de
 LICENSE: CC0, http://creativecommons.org/publicdomain/zero/1.0/
